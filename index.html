@@ -5,11 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student & Admin Panel</title>
     <style>
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4, #ffdde1, #90caf9);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -19,63 +27,80 @@
             width: 90%;
             max-width: 500px;
             background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
             text-align: center;
+        }
+        h2, h3 {
+            color: #333;
         }
         .btn {
             display: block;
             width: 100%;
             margin: 10px 0;
-            padding: 10px;
+            padding: 12px;
             border: none;
             background: #4CAF50;
             color: white;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
             transition: 0.3s;
         }
         .btn:hover {
-            background: #45a0a0;
+            background: #45a049;
         }
         .btn:disabled {
             background: gray;
             cursor: not-allowed;
         }
+        input {
+            width: 90%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+        }
         #adminPanel {
             display: none;
+        }
+        #studentList li {
+            font-weight: bold;
+            margin: 5px 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Student & Admin Panel</h2>
-        <button class="btn" onclick="showStudentSection()">Student Section</button>
-        <button class="btn" onclick="showAdminLogin()">Admin Section</button>
+        <h2>📚 Student & Admin Panel</h2>
+        <button class="btn" onclick="showStudentSection()">🎓 Student Section</button>
+        <button class="btn" onclick="showAdminLogin()">🔑 Admin Section</button>
         
         <div id="studentSection" style="display:none;">
-            <h3>Student Login</h3>
-            <label>Name:</label>
+            <h3>👨‍🎓 Student Login</h3>
+            <label><b>Name:</b></label>
             <input type="text" id="studentName" placeholder="Enter your name" oninput="validateForm()"><br><br>
-            <label>Branch:</label>
+            <label><b>Branch:</b></label>
             <input type="text" id="studentBranch" placeholder="Enter your branch" oninput="validateForm()"><br><br>
             <a id="startQuizLink" href="first.html">
-                <button class="btn" id="startQuizBtn" disabled>Start Quiz</button>
+                <button class="btn" id="startQuizBtn" disabled>🚀 Start Quiz</button>
             </a>
-            
         </div>
         
         <div id="adminLogin" style="display:none;">
-            <h3>Admin Login</h3>
-            <label>Password:</label>
+            <h3>🔐 Admin Login</h3>
+            <label><b>Password:</b></label>
             <input type="password" id="adminPassword" placeholder="Enter password"><br><br>
-            <button class="btn" onclick="verifyAdmin()">Login</button>
+            <button class="btn" onclick="verifyAdmin()">🔓 Login</button>
         </div>
         
         <div id="adminPanel">
-            <h3>Admin Panel</h3>
-            <p>List of Students who took the quiz:</p>
+            <h3>📋 Admin Panel</h3>
+            <p><b>List of Students who took the quiz:</b></p>
             <ul id="studentList"></ul>
         </div>
     </div>
@@ -103,7 +128,7 @@
                 document.getElementById("adminPanel").style.display = "block";
                 showStudentList();
             } else {
-                alert("Incorrect Password!");
+                alert("❌ Incorrect Password!");
             }
         }
 
@@ -114,28 +139,13 @@
             startQuizBtn.disabled = !(name && branch);
         }
 
-        function startQuiz() {
-            let name = document.getElementById("studentName").value.trim();
-            let branch = document.getElementById("studentBranch").value.trim();
-
-            if (name && branch) {
-                let student = { name, branch, correct: 0, wrong: 0 };
-                studentData.push(student);
-                localStorage.setItem("studentData", JSON.stringify(studentData));
-                alert("Quiz started for " + name);
-                window.location.href = "quiz.html";
-            } else {
-                alert("Please enter name and branch!");
-            }
-        }
-
         function showStudentList() {
             let list = document.getElementById("studentList");
             list.innerHTML = "";
             let storedData = JSON.parse(localStorage.getItem("studentData")) || [];
             storedData.forEach(student => {
                 let li = document.createElement("li");
-                li.textContent = `Name: ${student.name}, Branch: ${student.branch}, Correct: ${student.correct}, Wrong: ${student.wrong}`;
+                li.innerHTML = `<b>Name:</b> ${student.name}, <b>Branch:</b> ${student.branch}, ✅ <b>Correct:</b> ${student.correct}, ❌ <b>Wrong:</b> ${student.wrong}`;
                 list.appendChild(li);
             });
         }
