@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MCQ Quiz</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+      body {
+        font-family: "Times New Roman", Times, serif;
+        margin: 20px;
+        padding: 20px;
+        background: linear-gradient(135deg, #ff9a9e, #1cff60, #ff2ec4, #099be4);
+        background-size: 400% 400%;
+        animation: gradientAnimation 8s ease infinite;
+      }
+
+      @keyframes gradientAnimation {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      .container {
+        max-width: 600px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .question {
+        margin-bottom: 15px;
+      }
+      .options label {
+        display: block;
+        background: #f0f0f0;
+        padding: 10px;
+        border-radius: 5px;
+        margin: 5px 0;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+      .options label:hover {
+        background: linear-gradient(135deg, #61a6ff, #ec20db);
+      }
+      .submit-btn {
+        display: block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      .submit-btn:hover {
+        background: linear-gradient(135deg, #61a6ff, #ec20db);
+      }
+      #result {
+        margin-top: 20px;
+        font-size: 18px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>MCQ Quiz</h2>
+
+      <div id="quiz"></div>
+      <button class="submit-btn" onclick="submitQuiz()">Submit Answers</button>
+      <div id="result"></div>
+      <button class="submit-btn" onclick="downloadQuizPDF()">
+        Download Quiz as PDF
+      </button>
+    </div>
+
+    <script>
+      const questions = [
+        {
+          question: "Which scientist formulated the three laws of motion?",
+          options: [
+            "Galileo Galilei",
+            "Albert Einstein",
+            "Isaac Newton",
+            "Nikola Tesla",
+          ],
+          answer: "Isaac Newton",
+        },
+        {
+          question: "What does Newton's First Law of Motion state?",
+          options: [
+            "Force is equal to mass times acceleration",
+            "For every action, there is an equal and opposite reaction",
+            "An object at rest stays at rest unless acted upon by an external force",
+            "The total momentum remains constant in a closed system",
+          ],
+          answer:
+            "An object at rest stays at rest unless acted upon by an external force",
+        },
+        {
+          question: "Which law is also known as the Law of Inertia?",
+          options: [
+            "First Law",
+            "Second Law",
+            "Third Law",
+            "Law of Gravitation",
+          ],
+          answer: "First Law",
+        },
+        {
+          question: "Newton's Second Law states that force is equal to?",
+          options: [
+            "Mass × Velocity",
+            "Mass × Acceleration",
+            "Mass / Time",
+            "Momentum × Acceleration",
+          ],
+          answer: "Mass × Acceleration",
+        },
+        {
+          question:
+            "If the mass of an object is doubled while the force applied remains the same, what happens to its acceleration?",
+          options: [
+            "It doubles",
+            "It remains the same",
+            "It halves",
+            "It becomes zero",
+          ],
+          answer: "It halves",
+        },
+        {
+          question:
+            "Which law explains why a passenger moves forward when a moving car suddenly stops?",
+          options: [
+            "First Law",
+            "Second Law",
+            "Third Law",
+            "Law of Gravitation",
+          ],
+          answer: "First Law",
+        },
+        {
+          question:
+            "Which of the following is an example of Newton's Third Law?",
+          options: [
+            "A ball rolling on the ground eventually stops",
+            "A rocket propelling upward by expelling gases downward",
+            "An object falls freely under gravity",
+            "A car accelerating on a highway",
+          ],
+          answer: "A rocket propelling upward by expelling gases downward",
+        },
+        {
+          question: "What is the SI unit of force?",
+          options: ["Joule", "Newton", "Watt", "Pascal"],
+          answer: "Newton",
+        },
+        {
+          question:
+            "Which of Newton's Laws explains why you feel a jerk when a bus starts suddenly?",
+          options: [
+            "First Law",
+            "Second Law",
+            "Third Law",
+            "Law of Universal Gravitation",
+          ],
+          answer: "First Law",
+        },
+        {
+          question:
+            "What happens to an object in motion if no external force is applied?",
+          options: [
+            "It slows down and stops",
+            "It keeps moving with constant velocity",
+            "It accelerates",
+            "It moves in a circular path",
+          ],
+          answer: "It keeps moving with constant velocity",
+        },
+        {
+          question:
+            "A person pushes a wall but the wall does not move. What can we infer?",
+          options: [
+            "No force is applied",
+            "The force applied is less than friction",
+            "The wall applies an equal and opposite force",
+            "The person is weak",
+          ],
+          answer: "The wall applies an equal and opposite force",
+        },
+        {
+          question: "Which force keeps a satellite in orbit around Earth?",
+          options: [
+            "Friction",
+            "Electromagnetic Force",
+            "Gravitational Force",
+            "Normal Force",
+          ],
+          answer: "Gravitational Force",
+        },
+        {
+          question:
+            "A cricket player moves his hands backward while catching a ball to?",
+          options: [
+            "Increase the force applied",
+            "Increase the time of impact and reduce the force",
+            "Decrease the time of impact",
+            "Make the ball bounce away",
+          ],
+          answer: "Increase the time of impact and reduce the force",
+        },
+        {
+          question: "Which law explains the recoil of a gun after firing?",
+          options: [
+            "First Law",
+            "Second Law",
+            "Third Law",
+            "Law of Conservation of Energy",
+          ],
+          answer: "Third Law",
+        },
+        {
+          question: "A book resting on a table is an example of which law?",
+          options: [
+            "First Law",
+            "Second Law",
+            "Third Law",
+            "Law of Energy Conservation",
+          ],
+          answer: "First Law",
+        },
+      ];
+
+      const quizContainer = document.getElementById("quiz");
+      let userAnswers = [];
+
+      questions.forEach((q, index) => {
+        const questionDiv = document.createElement("div");
+        questionDiv.classList.add("question");
+        questionDiv.innerHTML = `<p>${index + 1}. ${q.question}</p>`;
+
+        const optionsDiv = document.createElement("div");
+        optionsDiv.classList.add("options");
+
+        q.options.forEach((option) => {
+          const label = document.createElement("label");
+          const radio = document.createElement("input");
+          radio.type = "radio";
+          radio.name = `question${index}`;
+          radio.value = option;
+          label.appendChild(radio);
+          label.appendChild(document.createTextNode(option));
+          optionsDiv.appendChild(label);
+        });
+
+        questionDiv.appendChild(optionsDiv);
+        quizContainer.appendChild(questionDiv);
+      });
+
+      function submitQuiz() {
+        let correctCount = 0;
+        let wrongCount = 0;
+        userAnswers = [];
+
+        questions.forEach((q, index) => {
+          const selectedOption = document.querySelector(
+            `input[name=question${index}]:checked`
+          );
+          if (selectedOption) {
+            userAnswers.push({
+              question: q.question,
+              selected: selectedOption.value,
+              correct: q.answer,
+              isCorrect: selectedOption.value === q.answer,
+            });
+            if (selectedOption.value === q.answer) {
+              correctCount++;
+            } else {
+              wrongCount++;
+            }
+          }
+        });
+
+        document.getElementById(
+          "result"
+        ).textContent = `Correct Answers: ${correctCount}, Wrong Answers: ${wrongCount}`;
+      }
+
+      function downloadQuizPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        let y = 10;
+
+        doc.setFontSize(16);
+        doc.text("MCQ Quiz Result", 10, y);
+        y += 10;
+
+        // Agar name aur branch kisi form se pass kar rahe ho, tabhi use karo
+        let name = localStorage.getItem("studentName") || "N/A";
+        let branch = localStorage.getItem("studentBranch") || "N/A";
+
+        doc.setFontSize(12);
+        doc.text("Name: " + name, 10, y);
+        y += 7;
+        doc.text("Branch: " + branch, 10, y);
+        y += 10;
+        doc.text("Result: ", 10, y);
+        y += 7;
+        doc.text(
+          `Correct Answers: ${userAnswers.filter((a) => a.isCorrect).length}`,
+          10,
+          y
+        );
+        y += 7;
+        doc.text(
+          `Wrong Answers: ${userAnswers.filter((a) => !a.isCorrect).length}`,
+          10,
+          y
+        );
+        y += 10;
+
+        userAnswers.forEach((ans, index) => {
+          doc.text(`${index + 1}. ${ans.question}`, 10, y);
+          y += 7;
+          doc.text(`   Your Answer: ${ans.selected}`, 15, y);
+          y += 7;
+          doc.text(`   Correct Answer: ${ans.correct}`, 15, y);
+          y += 10;
+        });
+
+        doc.save("quiz_result.pdf");
+      }
+    </script>
+  </body>
+</html>

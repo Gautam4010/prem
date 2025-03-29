@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student & Admin Panel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 90%;
+            max-width: 500px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border: none;
+            background: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background: #45a0a0;
+        }
+        .btn:disabled {
+            background: gray;
+            cursor: not-allowed;
+        }
+        #adminPanel {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Student & Admin Panel</h2>
+        <button class="btn" onclick="showStudentSection()">Student Section</button>
+        <button class="btn" onclick="showAdminLogin()">Admin Section</button>
+        
+        <div id="studentSection" style="display:none;">
+            <h3>Student Login</h3>
+            <label>Name:</label>
+            <input type="text" id="studentName" placeholder="Enter your name" oninput="validateForm()"><br><br>
+            <label>Branch:</label>
+            <input type="text" id="studentBranch" placeholder="Enter your branch" oninput="validateForm()"><br><br>
+            <a id="startQuizLink" href="first.html">
+                <button class="btn" id="startQuizBtn" disabled>Start Quiz</button>
+            </a>
+            
+        </div>
+        
+        <div id="adminLogin" style="display:none;">
+            <h3>Admin Login</h3>
+            <label>Password:</label>
+            <input type="password" id="adminPassword" placeholder="Enter password"><br><br>
+            <button class="btn" onclick="verifyAdmin()">Login</button>
+        </div>
+        
+        <div id="adminPanel">
+            <h3>Admin Panel</h3>
+            <p>List of Students who took the quiz:</p>
+            <ul id="studentList"></ul>
+        </div>
+    </div>
+
+    <script>
+        const correctAdminPassword = "admin123";
+        let studentData = JSON.parse(localStorage.getItem("studentData")) || [];
+
+        function showStudentSection() {
+            document.getElementById("studentSection").style.display = "block";
+            document.getElementById("adminLogin").style.display = "none";
+            document.getElementById("adminPanel").style.display = "none";
+        }
+
+        function showAdminLogin() {
+            document.getElementById("adminLogin").style.display = "block";
+            document.getElementById("studentSection").style.display = "none";
+            document.getElementById("adminPanel").style.display = "none";
+        }
+
+        function verifyAdmin() {
+            let enteredPassword = document.getElementById("adminPassword").value;
+            if (enteredPassword === correctAdminPassword) {
+                document.getElementById("adminLogin").style.display = "none";
+                document.getElementById("adminPanel").style.display = "block";
+                showStudentList();
+            } else {
+                alert("Incorrect Password!");
+            }
+        }
+
+        function validateForm() {
+            let name = document.getElementById("studentName").value.trim();
+            let branch = document.getElementById("studentBranch").value.trim();
+            let startQuizBtn = document.getElementById("startQuizBtn");
+            startQuizBtn.disabled = !(name && branch);
+        }
+
+        function startQuiz() {
+            let name = document.getElementById("studentName").value.trim();
+            let branch = document.getElementById("studentBranch").value.trim();
+
+            if (name && branch) {
+                let student = { name, branch, correct: 0, wrong: 0 };
+                studentData.push(student);
+                localStorage.setItem("studentData", JSON.stringify(studentData));
+                alert("Quiz started for " + name);
+                window.location.href = "quiz.html";
+            } else {
+                alert("Please enter name and branch!");
+            }
+        }
+
+        function showStudentList() {
+            let list = document.getElementById("studentList");
+            list.innerHTML = "";
+            let storedData = JSON.parse(localStorage.getItem("studentData")) || [];
+            storedData.forEach(student => {
+                let li = document.createElement("li");
+                li.textContent = `Name: ${student.name}, Branch: ${student.branch}, Correct: ${student.correct}, Wrong: ${student.wrong}`;
+                list.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
